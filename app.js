@@ -108,21 +108,12 @@ const app = Vue.createApp({
             //end player turn 
             this.playerTurn = !this.playerTurn;
             // console.log("player turn"+this.playerTurn);
-
-            // // check if either one died gameOver take no action
-            // if ( this.gameOver){
-            //     return;
-            // }else{
-            //     // chain to monster attack to player
-            //     this.attackToPlayer();
-            // }
-
-            // chain to monster attack to player
-            // this.attackToPlayer();
             
         },
         attackToPlayer(){
+            // give player access to do action
             this.takeAction = !this.takeAction;
+            
             // delay to see the action
             setTimeout(()=>{
                 console.log("monster attack");
@@ -160,11 +151,15 @@ const app = Vue.createApp({
 
             this.playerAtt.skill.usedAtRound = this.currentRound;
             console.log(this.playerAtt.skill.usedAtRound);
+            
+            // apply crit damage
             attackValue = getRandomValue(this.playerAtt.maxAttck,this.playerAtt.minAttack);
             attackValue*=1.9;
 
             this.monsterAtt.health-=attackValue;
-            this.attackToPlayer();
+
+            //end player turn 
+            this.playerTurn = !this.playerTurn;
         },
         healPlayer(){
             // check if either one died gameOver take no ac
@@ -174,7 +169,8 @@ const app = Vue.createApp({
 
             this.playerAtt.health += this.playerAtt.heal;
 
-            this.attackToPlayer();
+            //end player turn 
+            this.playerTurn = !this.playerTurn;
             console.log("healed");
         }
         

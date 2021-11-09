@@ -36,9 +36,10 @@
         <button>SURRENDER</button>
       </section>
       <section id="log" class="container">
-        <h2 :class="winStatusClasses">
+        <h2 v-show="gameOver">Game Over</h2>
+        <h3 :class="winStatusClasses">
           {{winStatus}}
-        </h2>
+        </h3>
         
         <h2>Battle Log</h2>
         <ul></ul>
