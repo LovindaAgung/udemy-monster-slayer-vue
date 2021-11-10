@@ -28,6 +28,8 @@ const app = Vue.createApp({
             takeAction:true,
             playerTurn:true,
             gameOver:false,
+            winStatus:'',
+            logs:[],
         };
     },
     computed:{
@@ -52,11 +54,11 @@ const app = Vue.createApp({
                 return this.currentRound - this.playerAtt.skill.usedAtRound > this.playerAtt.skill.cooldown ? false : true;
             }
         },
-        winStatus(){
+        winLogic(){
             if(this.monsterAtt.health<=0){
-                return "Human Win";
+                return this.winStatus = "Human Win";
             }else if(this.playerAtt.health<=0){
-                return "Monster Win";
+                return this.winStatus = "Monster Win";
             }
         },         
         winStatusClasses(){
@@ -76,7 +78,6 @@ const app = Vue.createApp({
             this.playerAtt.health > this.playerAtt.maxHealth ? this.playerAtt.health = this.playerAtt.maxHealth : '';
         },
         playerTurn(){
-            
             this.gameOver? console.log("gameover"): console.log("not game over");;
             if(this.playerTurn == false && this.gameOver==false) {
                 // console.log("prepare monster attack");
@@ -84,7 +85,7 @@ const app = Vue.createApp({
                 this.playerTurn = !this.playerTurn;
             }
         },
-        winStatus(){
+        winLogic(){
             if(this.monsterAtt.health<=0){
                 this.gameOver=true;
             }else if(this.playerAtt.health<=0){
@@ -93,6 +94,17 @@ const app = Vue.createApp({
         }
     },
     methods: {
+        restartGame(){
+            this.playerAtt.health = this.playerAtt.maxHealth;
+            this.playerAtt.skill.usedAtRound = 0;
+            this.monsterAtt.health = this.monsterAtt.maxHealth;
+            this.currentRound=1;
+            this.takeAction=true;
+            this.playerTurn=true;
+            this.gameOver=false;
+            this.logs = [];
+            this.addLog();
+        },
         attackToMonster(){
             // check if either one died gameOver take no action
             if ( this.gameOver){
@@ -104,6 +116,9 @@ const app = Vue.createApp({
             
             // reduce monster health
             this.monsterAtt.health -= attackValue;
+
+            // add log
+            this.addLog("Player","damage",attackValue);
 
             //end player turn 
             this.playerTurn = !this.playerTurn;
@@ -122,13 +137,16 @@ const app = Vue.createApp({
                 attackValue = getRandomValue(this.monsterAtt.maxAttck,this.monsterAtt.minAttack);
                 
                 // crit chance
-                if(this.isCriticalHits(this.monsterAtt.critChance) == true) {
+                isCritting = this.isCriticalHits(this.monsterAtt.critChance);
+                if(isCritting) {
                     attackValue *= this.monsterAtt.critMultiplier;
                     console.log("monster land crit hit for "+ attackValue + " damage");
                 }
                 
                 // reduce player health
                 this.playerAtt.health -= attackValue;
+
+                isCritting ? this.addLog("monster","enemyCrit",attackValue) : this.addLog("monster","damage",attackValue);
                 
                 // increase round
                 this.currentRound++;
@@ -155,7 +173,9 @@ const app = Vue.createApp({
             // apply crit damage
             attackValue = getRandomValue(this.playerAtt.maxAttck,this.playerAtt.minAttack);
             attackValue*=1.9;
-
+            
+            
+            this.addLog("player","specialAttack",attackValue);
             this.monsterAtt.health-=attackValue;
 
             //end player turn 
@@ -166,14 +186,45 @@ const app = Vue.createApp({
             if ( this.gameOver){
                 return;
             }
-
+            
+            this.addLog("player","heal",this.playerAtt.heal);
             this.playerAtt.health += this.playerAtt.heal;
 
             //end player turn 
             this.playerTurn = !this.playerTurn;
             console.log("healed");
-        }
-        
+        },
+        surrender(){
+            if ( this.gameOver){
+                return;
+            }
+            this.addLog("player","surrender");
+            this.gameOver = true;
+            this.winStatus = "You surrender, no one harmed";
+            console.log("surrendered");
+        },
+        addLog(actor, action, value){
+            switch (action){
+                case 'damage':
+                    this.logs.push(actor+" deal "+value+" damage");
+                    break;
+                case 'specialAttack':
+                    this.logs.push(actor+" special attack, deal "+value+" damage");
+                    break;
+                case 'heal':
+                    this.logs.push(actor+" heal self for "+value+" hp");
+                    break;
+                case 'surrender':
+                    this.logs.push(actor+" decide to get away");
+                    break;
+                case 'enemyCrit':
+                    this.logs.push(actor+" deal "+value+" critical damage");
+                    break;
+                default:
+                    this.logs.push("Player meet a monster");
+
+            }
+        },        
     }
 });
 

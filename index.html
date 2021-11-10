@@ -29,20 +29,25 @@
           <div :style="{width: playerHealthPercentage}" class="healthbar__value"></div>
         </div>
       </section>
-      <section v-show="takeAction" id="controls">
-        <button @click="attackToMonster()">ATTACK</button>
-        <button :disabled="specialAttackReady" @click="specialAttackToMonster()">SPECIAL ATTACK</button>
-        <button @click="healPlayer">HEAL</button>
-        <button>SURRENDER</button>
-      </section>
-      <section id="log" class="container">
+      <section id="log" class="container" v-if="gameOver">
         <h2 v-show="gameOver">Game Over</h2>
         <h3 :class="winStatusClasses">
           {{winStatus}}
         </h3>
-        
+        <button @click="restartGame()">Restart</button>
+      </section>
+      <section v-show="takeAction" id="controls" v-else>
+        <button @click="attackToMonster()">ATTACK</button>
+        <button :disabled="specialAttackReady" @click="specialAttackToMonster()">SPECIAL ATTACK</button>
+        <button @click="healPlayer">HEAL</button>
+        <button @click="surrender()">SURRENDER</button>
+      </section>
+      <section id="log" class="container">
         <h2>Battle Log</h2>
-        <ul></ul>
+        <span v-if="logs.length===0">Player meet a monster</span>
+        <ul v-for="log in logs">
+          <li>{{log}}</li>
+        </ul>
       </section>
     </div>
   </body>
