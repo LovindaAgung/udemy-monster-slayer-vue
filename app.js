@@ -103,7 +103,7 @@ const app = Vue.createApp({
             this.playerTurn=true;
             this.gameOver=false;
             this.logs = [];
-            this.addLog();
+            // this.addLog();
         },
         attackToMonster(){
             // check if either one died gameOver take no action
@@ -206,22 +206,22 @@ const app = Vue.createApp({
         addLog(actor, action, value){
             switch (action){
                 case 'damage':
-                    this.logs.push(actor+" deal "+value+" damage");
+                    this.logs.unshift(actor+" deal "+value+" damage");
                     break;
                 case 'specialAttack':
-                    this.logs.push(actor+" special attack, deal "+value+" damage");
+                    this.logs.unshift(actor+" special attack, deal "+value+" damage");
                     break;
                 case 'heal':
-                    this.logs.push(actor+" heal self for "+value+" hp");
+                    this.logs.unshift(actor+" heal self for "+value+" hp");
                     break;
                 case 'surrender':
-                    this.logs.push(actor+" decide to get away");
+                    this.logs.unshift(actor+" decide to get away");
                     break;
                 case 'enemyCrit':
-                    this.logs.push(actor+" deal "+value+" critical damage");
+                    this.logs.unshift(actor+" deal "+value+" critical damage");
                     break;
                 default:
-                    this.logs.push("Player meet a monster");
+                    this.logs.unshift("Player meet a monster");
 
             }
         },        
