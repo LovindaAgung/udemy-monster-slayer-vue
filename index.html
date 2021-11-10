@@ -46,7 +46,41 @@
         <h2>Battle Log</h2>
         <span v-if="logs.length===0">Player meet a monster</span>
         <ul v-for="log in logs">
-          <li>{{log}}</li>
+          <li>
+            <span :class="'log--'+log.logActor">{{log.logActor}}&nbsp</span>
+<!-- 
+            <span v-if="log.logAction=='damage'">attack, deal </span>
+            <span v-else-if="log.logAction=='specialAttack'">use Special Attack, deal </span>
+            <span v-else-if="log.logAction=='enemyCrit'">angry, deal </span>
+            <span v-else-if="log.logAction=='heal'">heal, recover </span>
+            <span v-else>decide to get away</span>
+            
+
+            <span :class="" v-if="log.logAction=='damage'">{{log.logValue}} damage</span>
+            <span v-else-if="log.logAction=='specialAttack'">{{log.logValue}} damage</span>
+            <span v-else-if="log.logAction=='enemyCrit'">{{log.logValue}} critical damage</span>
+            <span :class="'log--'+log.logAction" v-else-if="log.logAction=='heal'">{{log.logValue}} HP</span> -->
+
+            <span v-if="log.logAction=='damage'">
+              attack, deal 
+              <span :class="'log--damage'" >{{log.logValue}} damage</span>
+            </span>
+            <span v-else-if="log.logAction=='specialAttack'">
+              use Special Attack, deal 
+              <span :class="'log--damage'" >{{log.logValue}} damage</span>
+            </span>
+            <span v-else-if="log.logAction=='enemyCrit'">
+              angry, deal 
+              <span>{{log.logValue}} critical damage</span>
+            </span>
+            <span v-else-if="log.logAction=='heal'">
+              heal, recover 
+              <span :class="'log--heal'">{{log.logValue}} HP</span>
+            </span>
+            <span v-else>decide to get away</span>
+            
+            
+          </li>
         </ul>
       </section>
     </div>

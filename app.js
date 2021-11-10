@@ -118,7 +118,7 @@ const app = Vue.createApp({
             this.monsterAtt.health -= attackValue;
 
             // add log
-            this.addLog("Player","damage",attackValue);
+            this.addLog("player","damage",attackValue);
 
             //end player turn 
             this.playerTurn = !this.playerTurn;
@@ -204,26 +204,30 @@ const app = Vue.createApp({
             console.log("surrendered");
         },
         addLog(actor, action, value){
-            switch (action){
-                case 'damage':
-                    this.logs.unshift(actor+" deal "+value+" damage");
-                    break;
-                case 'specialAttack':
-                    this.logs.unshift(actor+" special attack, deal "+value+" damage");
-                    break;
-                case 'heal':
-                    this.logs.unshift(actor+" heal self for "+value+" hp");
-                    break;
-                case 'surrender':
-                    this.logs.unshift(actor+" decide to get away");
-                    break;
-                case 'enemyCrit':
-                    this.logs.unshift(actor+" deal "+value+" critical damage");
-                    break;
-                default:
-                    this.logs.unshift("Player meet a monster");
-
-            }
+            // switch (action){
+            //     case 'damage':
+            //         this.logs.unshift(actor+" deal "+value+" damage");
+            //         break;
+            //     case 'specialAttack':
+            //         this.logs.unshift(actor+" special attack, deal "+value+" damage");
+            //         break;
+            //     case 'heal':
+            //         this.logs.unshift(actor+" heal self for "+value+" hp");
+            //         break;
+            //     case 'surrender':
+            //         this.logs.unshift(actor+" decide to get away");
+            //         break;
+            //     case 'enemyCrit':
+            //         this.logs.unshift(actor+" deal "+value+" critical damage");
+            //         break;
+            //     default:
+            //         this.logs.unshift("Player meet a monster");
+            // }
+            this.logs.unshift({
+                logActor:actor,
+                logAction:action,
+                logValue:value,
+            })
         },        
     }
 });
